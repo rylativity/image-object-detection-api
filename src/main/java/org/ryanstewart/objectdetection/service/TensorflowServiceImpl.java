@@ -16,6 +16,7 @@ import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tensorflow.SavedModelBundle;
+import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 import org.tensorflow.types.UInt8;
 
@@ -28,38 +29,33 @@ public class TensorflowServiceImpl implements TensorflowService {
 
 //	@Value("${tensorflow.model.path}") TODO use value from application.yml
 	private String modelPath = "/Users/Ryan/github/image-object-detection-api/tf_models/ssd_mobilenet_v1_coco_2017_11_17";
-
-	private int BATCH_SIZE = 1;
-	private int CHANNELS = 3;
+	private String labelsAsPropertyString = "detection_boxes:0,detection_classes:0,detection_scores:0,num_detections:0";
 
 	SavedModelBundle model;
+	String[] labels = labelsAsPropertyString.split(",");
 
 	@Autowired
 	public TensorflowServiceImpl() {
 		System.out.println("MODEL NAME ::: ::: ::: " + modelPath);
 		SavedModelBundle model = SavedModelBundle.load(modelPath, "serve");
 		this.model = model;
+		this.labels = labels;
 	}
 
 	@Override
 	public DetectionResponseDTO detectObjectsInImage(final byte[] imgAsBytes) throws IOException {
 		Tensor<UInt8> inputTensor = makeImageTensor(imgAsBytes);
-		List<Tensor<?>> result = model.session().runner()
-				.feed("image_tensor:0", inputTensor)
-				.fetch("detection_boxes:0")
-				.fetch("detection_classes:0")
-				.fetch("detection_scores:0")
-				.fetch("num_detections:0")
-				.run();
 
+		Session.Runner runner = model.session().runner()
+				.feed("image_tensor:0", inputTensor);
 
-		String[] outputTensorLabels = {"detection_boxes:0",
-		                               "detection_classes:0",
-		                               "detection_scores:0",
-		                               "num_detections:0"};
+		for(String label : labels){
+			runner.fetch(label);
+		}
 
+		List<Tensor<?>> result = runner.run();
 
-		Map<String, Object> resultMap = unpackTensorflowResults(result, outputTensorLabels);
+		Map<String, Object> resultMap = unpackTensorflowResults(result, labels);
 
 		//TODO unpack results depending on format
 		return new DetectionResponseDTO(resultMap);
