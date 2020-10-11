@@ -77,60 +77,45 @@ public class TensorflowServiceImpl implements TensorflowService {
 		int dims;
 		Tensor tensor;
 		for(int i=0; i < numResultTensors; i++){
-			String label = tensorLabels[i];
+			String label = tensorLabels[i].replace(":0","");
 			tensor = resultTensors.get(i);
 			dims = tensor.numDimensions();
 			List<Float> floats;
 
-			switch(dims){
+			switch(dims){ // TODO These assume that a single input tensor and one of each output tensors are used.
+				// TODO extrapolate to any number of input and output tensors
 				case 0:
-					float scalarTensorValue = tensor.floatValue();
-					map.put(label, scalarTensorValue);
+					System.out.println("One Dimensional tensor '" + label + "' encountered while unpacking results");
 					break;
-				case 1:
+				case 1: //Handle scalar tensor (TODO assuming single output tensor)
 					float[] oneDimFloatArray = new float[(int) tensor.numElements()];
 					tensor.copyTo(oneDimFloatArray);
-					floats = new ArrayList<>();
-					for(float f : oneDimFloatArray){
-						floats.add(f);
-					}
-					map.put(label, floats);
+					float floatValue = oneDimFloatArray[0];
+					map.put(label, floatValue);
 					break;
 				case 2:
 					float[][] twoDimFloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]];
 					tensor.copyTo(twoDimFloatArray);
-					List<List<Float>> twoDimList = new ArrayList<>();
-					for (float[] row:twoDimFloatArray){
-						floats = new ArrayList<>();
-						for(float f : row){
-							floats.add(f);
-
-						}
-						twoDimList.add(floats);
+					List<Float> floatValues = new ArrayList<>();
+					for (float f:twoDimFloatArray[0]){ //Handle single array tensor (TODO assuming single output tensor)
+						floatValues.add(f);
 					}
-					map.put(label, twoDimList);
+					map.put(label, floatValues);
 					break;
 				case 3:
 					float[][][] threeDimFloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]][(int) tensor.shape()[2]];
 					tensor.copyTo(threeDimFloatArray);
-					List<List<List<Float>>> threeDimList = new ArrayList<>();
-					for (float[][] matrix:threeDimFloatArray)
+					List<List<Float>> twoDimFloatList = new ArrayList<>();
+					for (float[] fArr:threeDimFloatArray[0]) //Handle array of array tensor (TODO assuming single output tensor)
 					{
-						List<List<Float>> twoDimList_2 = new ArrayList<>();
-						for (float[] row : matrix)
+						List<Float> floatList2 = new ArrayList<>();
+						for (float f : fArr)
 						{
-							floats = new ArrayList<>();
-							for (float f : row)
-							{
-								floats.add(f);
-
-							}
-							twoDimList_2.add(floats);
-
+							floatList2.add(f);
 						}
-						threeDimList.add(twoDimList_2);
+						twoDimFloatList.add(floatList2);
 					}
-					map.put(label, threeDimList);
+					map.put(label, twoDimFloatList);
 					break;
 				default:
 					throw new IOException("No unpacking handler for tensor with " + dims + " dimensions");
