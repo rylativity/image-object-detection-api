@@ -44,13 +44,14 @@ public class TensorflowServiceImpl implements TensorflowService {
 	@Override
 	public DetectionResponseDTO detectObjectsInImage(final byte[] imgAsBytes) throws IOException {
 		Tensor<UInt8> inputTensor = makeImageTensor(imgAsBytes);
-		List<Tensor<?>> result = model.session().runner() //TODO
+		List<Tensor<?>> result = model.session().runner()
 				.feed("image_tensor:0", inputTensor)
-				.fetch("detection_boxes:0", 0)
-				.fetch("detection_classes:0", 1)
-				.fetch("detection_scores:0", 2)
-				.fetch("num_detections:0", 3)
+				.fetch("detection_boxes:0")
+				.fetch("detection_classes:0")
+				.fetch("detection_scores:0")
+				.fetch("num_detections:0")
 				.run();
+
 
 		String[] outputTensorLabels = {"detection_boxes:0",
 		                               "detection_classes:0",
@@ -110,6 +111,28 @@ public class TensorflowServiceImpl implements TensorflowService {
 						twoDimList.add(floats);
 					}
 					map.put(label, twoDimList);
+					break;
+				case 3:
+					float[][][] threeDimfloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]][(int) tensor.shape()[2]];
+					tensor.copyTo(threeDimfloatArray);
+					List<List<List<Float>>> threeDimList = new ArrayList<>();
+					for (float[][] matrix:threeDimfloatArray)
+					{
+						List<List<Float>> twoDimList_2 = new ArrayList<>();
+						for (float[] row : matrix)
+						{
+							floats = new ArrayList<>();
+							for (float f : row)
+							{
+								floats.add(f);
+
+							}
+							twoDimList_2.add(floats);
+
+						}
+						threeDimList.add(twoDimList_2);
+					}
+					map.put(label, threeDimList);
 					break;
 				default:
 					throw new IOException("No unpacking handler for tensor with " + dims + " dimensions");
