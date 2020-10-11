@@ -61,7 +61,9 @@ public class TensorflowServiceImpl implements TensorflowService {
 		return new DetectionResponseDTO(resultMap);
 	}
 
+
 	private Map<String, Object> unpackTensorflowResults(List<Tensor<?>> resultTensors, String[] tensorLabels) throws IOException
+	// TODO update this to return list of Maps, one for each input
 	{
 
 		try {
