@@ -1,0 +1,17 @@
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ['configprops', 'env', 'health', 'info', 'logfile', 'loggers', 'prometheus', 'threaddump']
+
+# SPRING CONFIGURATION
+spring:
+  application:
+    name: image-object-detection-api
+  output:
+    ansi:
+      enabled: always
+#  jpa:
+#    open-in-view: false
+#    pr

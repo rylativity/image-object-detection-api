@@ -1,0 +1,18 @@
+${AnsiColor.GREEN}        ,----,                                                          ${AnsiColor.RED}
+${AnsiColor.GREEN}      ,/   .`|                                                          ${AnsiColor.RED}
+${AnsiColor.GREEN}    ,`   .'  :                                                          ${AnsiColor.RED}     ,---,.                            ___
+${AnsiColor.GREEN}  ;    ;     /                                                          ${AnsiColor.RED}   ,'  .'  \                         ,--.'|_
+${AnsiColor.GREEN}.'___,/    ,'                   ,---,                  ,---.     __  ,-.${AnsiColor.RED} ,---.' .' |    ,---.      ,---.     |  | :,'
+${AnsiColor.GREEN}|    :     |                ,-+-. /  |   .--.--.      '   ,'\  ,' ,'/ /|${AnsiColor.RED} |   |  |: |   '   ,'\    '   ,'\    :  : ' :
+${AnsiColor.GREEN};    |.';  ;      ,---.    ,--.'|'   |  /  /    '    /   /   | '  | |' |${AnsiColor.RED} :   :  :  /  /   /   |  /   /   | .;__,'  /
+${AnsiColor.GREEN}`----'  |  |     /     \  |   |  ,"' | |  :  /`./   .   ; ,. : |  |   ,'${AnsiColor.RED} :   |    ;  .   ; ,. : .   ; ,. : |  |   |
+${AnsiColor.GREEN}    '   :  ;    /    /  | |   | /  | | |  :  ;_     '   | |: : '  :  /  ${AnsiColor.RED} |   :     \ '   | |: : '   | |: : :__,'| :
+${AnsiColor.GREEN}    |   |  '   .    ' / | |   | |  | |  \  \    `.  '   | .; : |  | '   ${AnsiColor.RED} |   |   . | '   | .; : '   | .; :   '  : |__
+${AnsiColor.GREEN}    '   :  |   '   ;   /| |   | |  |/    `----.   \ |   :    | ;  : |   ${AnsiColor.RED} '   :  '; | |   :    | |   :    |   |  | '.'|
+${AnsiColor.GREEN}    ;   |.'    '   |  / | |   | |--'    /  /`--'  /  \   \  /  |  , ;   ${AnsiColor.RED} |   |  | ;   \   \  /   \   \  /    ;  :    ;
+${AnsiColor.GREEN}    '---'      |   :    | |   |/       '--'.     /    `----'    ---'    ${AnsiColor.RED} |   :   /     `----'     `----'     |  ,   /
+${AnsiColor.GREEN}                \   \  /  '---'          `--'---'                       ${AnsiColor.RED} |   | ,'                             ---`-'
+${AnsiColor.GREEN}                 `----'                                                 ${AnsiColor.RED} `----'
+
+${AnsiColor.BRIGHT_BLUE}:: Dev: Ryan Stewart  :: Running Spring Boot ${spring-boot.version} ::
+::${AnsiColor.DEFAULT}

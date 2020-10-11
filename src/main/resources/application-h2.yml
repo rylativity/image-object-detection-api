@@ -1,0 +1,30 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    platform: org.hibernate.dialect.H2Dialect
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:TESTDB;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS api_template;
+    username: sa
+    password:
+#  liquibase:
+#    enabled: false
+#    change-log: "classpath:/db/db.changelog.master.json"
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: false
+#    open-in-view: true
+#    properties:
+#      hibernate:
+#        default_schema: api_template
+#        id:
+#          new_generator_mappings: true
+#          generate_statistics: false
+#          cache:
+#            use_query_cache: false
+#        dialect: org.hibernate.dialect.H2Dialect
+#        format_sql: true
+#        temp:
+#          use_jdbc_metadata_defaults: false
