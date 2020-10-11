@@ -95,10 +95,10 @@ public class TensorflowServiceImpl implements TensorflowService {
 					map.put(label, floats);
 					break;
 				case 2:
-					float[][] twoDimfloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]];
-					tensor.copyTo(twoDimfloatArray);
+					float[][] twoDimFloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]];
+					tensor.copyTo(twoDimFloatArray);
 					List<List<Float>> twoDimList = new ArrayList<>();
-					for (float[] row:twoDimfloatArray){
+					for (float[] row:twoDimFloatArray){
 						floats = new ArrayList<>();
 						for(float f : row){
 							floats.add(f);
@@ -109,10 +109,10 @@ public class TensorflowServiceImpl implements TensorflowService {
 					map.put(label, twoDimList);
 					break;
 				case 3:
-					float[][][] threeDimfloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]][(int) tensor.shape()[2]];
-					tensor.copyTo(threeDimfloatArray);
+					float[][][] threeDimFloatArray = new float[(int)tensor.shape()[0]][(int) tensor.shape()[1]][(int) tensor.shape()[2]];
+					tensor.copyTo(threeDimFloatArray);
 					List<List<List<Float>>> threeDimList = new ArrayList<>();
-					for (float[][] matrix:threeDimfloatArray)
+					for (float[][] matrix:threeDimFloatArray)
 					{
 						List<List<Float>> twoDimList_2 = new ArrayList<>();
 						for (float[] row : matrix)
