@@ -12,6 +12,10 @@ spring:
   output:
     ansi:
       enabled: always
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
 #  jpa:
 #    open-in-view: false
 #    pr
