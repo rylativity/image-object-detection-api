@@ -3,15 +3,19 @@ package org.ryanstewart.objectdetection.service;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,16 +34,17 @@ public class TensorflowServiceImpl implements TensorflowService {
 //	@Value("${tensorflow.model.path}") TODO use value from application.yml
 	private String modelPath = "/Users/Ryan/github/image-object-detection-api/tf_models/ssd_mobilenet_v1_coco_2017_11_17";
 	private String labelsAsPropertyString = "detection_boxes:0,detection_classes:0,detection_scores:0,num_detections:0";
+	private String labelMapPath = "/Users/Ryan/github/image-object-detection-api/tf_models/mscoco_category_map.json";
 
 	SavedModelBundle model;
-	String[] labels = labelsAsPropertyString.split(",");
+	String[] tensorLabels = labelsAsPropertyString.split(",");
+	Map<String,String> categoryLabels;
 
 	@Autowired
 	public TensorflowServiceImpl() {
 		System.out.println("MODEL NAME ::: ::: ::: " + modelPath);
 		SavedModelBundle model = SavedModelBundle.load(modelPath, "serve");
 		this.model = model;
-		this.labels = labels;
 	}
 
 	@Override
@@ -49,18 +54,44 @@ public class TensorflowServiceImpl implements TensorflowService {
 		Session.Runner runner = model.session().runner()
 				.feed("image_tensor:0", inputTensor);
 
-		for(String label : labels){
+		for(String label : tensorLabels){
 			runner.fetch(label);
 		}
 
 		List<Tensor<?>> result = runner.run();
 
-		Map<String, Object> resultMap = unpackTensorflowResults(result, labels);
+		Map<String, Object> resultMap = unpackTensorflowResults(result, tensorLabels);
+
+		categoryLabels = new ObjectMapper().readValue(new File(labelMapPath), HashMap.class);
+		float threshold = 0.85f;
+		List<String> classesOverThresh = identifyCategoriesOverThreshold(resultMap, categoryLabels, threshold);
+		resultMap.put("ClassesDetected", classesOverThresh);
 
 		//TODO unpack results depending on format
 		return new DetectionResponseDTO(resultMap);
 	}
 
+	private List<String> identifyCategoriesOverThreshold(Map<String, Object> results, Map<String,String> labelMap, float threshold)
+	{
+		List<Float> scores = (List<Float>) results.get("detection_scores"); // TODO check these casts
+		List<Float> numericCategories = (List<Float>) results.get("detection_classes"); // TODO check these casts
+		HashSet<String> catsOverThreshWDuplicates = new HashSet<>();
+		String conversionMapKey;
+		String categoryName;
+		Float score;
+		for(int i=0; i < scores.size(); i++){
+			score = scores.get(i);
+			if(score >= threshold){
+				//TODO grab detection_class and then convert value
+				conversionMapKey = Float.toString(numericCategories.get(i)).replace(".0","");
+				categoryName = labelMap.get(conversionMapKey);
+				catsOverThreshWDuplicates.add(categoryName);
+			}
+		}
+		List<String> catsOverThresh = new ArrayList<>(catsOverThreshWDuplicates);
+
+		return catsOverThresh;
+	}
 
 	private Map<String, Object> unpackTensorflowResults(List<Tensor<?>> resultTensors, String[] tensorLabels) throws IOException
 	// TODO update this to return list of Maps, one for each input
