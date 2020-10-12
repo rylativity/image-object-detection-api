@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ryanstewart.objectdetection.model.dto.ClassesAtThresholdDTO;
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,15 +37,19 @@ public class TensorflowServiceImpl implements TensorflowService {
 	private String modelPath = "/Users/Ryan/github/image-object-detection-api/tf_models/ssd_mobilenet_v1_coco_2017_11_17";
 	private String labelsAsPropertyString = "detection_boxes:0,detection_classes:0,detection_scores:0,num_detections:0";
 	private String labelMapPath = "/Users/Ryan/github/image-object-detection-api/tf_models/mscoco_category_map.json";
+	private float[] thresholdValuesString = new float[5];
+
 
 	SavedModelBundle model;
 	String[] tensorLabels = labelsAsPropertyString.split(",");
-	Map<String,String> categoryLabels;
+	Map<String,String> labelMap;
 
 	@Autowired
-	public TensorflowServiceImpl() {
+	public TensorflowServiceImpl() throws IOException
+	{
 		System.out.println("MODEL NAME ::: ::: ::: " + modelPath);
 		SavedModelBundle model = SavedModelBundle.load(modelPath, "serve");
+		this.labelMap = new ObjectMapper().readValue(new File(labelMapPath), HashMap.class);
 		this.model = model;
 	}
 
@@ -60,21 +66,16 @@ public class TensorflowServiceImpl implements TensorflowService {
 
 		List<Tensor<?>> result = runner.run();
 
-		Map<String, Object> resultMap = unpackTensorflowResults(result, tensorLabels);
-
-		categoryLabels = new ObjectMapper().readValue(new File(labelMapPath), HashMap.class);
-		float threshold = 0.85f;
-		List<String> classesOverThresh = identifyCategoriesOverThreshold(resultMap, categoryLabels, threshold);
-		resultMap.put("ClassesDetected", classesOverThresh);
+		DetectionResponseDTO detectionResponseDTO = unpackTensorflowResults(result, tensorLabels);
 
 		//TODO unpack results depending on format
-		return new DetectionResponseDTO(resultMap);
+		return detectionResponseDTO;
 	}
 
-	private List<String> identifyCategoriesOverThreshold(Map<String, Object> results, Map<String,String> labelMap, float threshold)
+	private List<String> identifyCategoriesOverThreshold(DetectionResponseDTO results, float threshold)
 	{
-		List<Float> scores = (List<Float>) results.get("detection_scores"); // TODO check these casts
-		List<Float> numericCategories = (List<Float>) results.get("detection_classes"); // TODO check these casts
+		List<Float> scores = (List<Float>) results.getDetectionScores(); // TODO check these casts
+		List<Integer> numericCategories = (List<Integer>) results.getDetectionClasses(); // TODO check these casts
 		HashSet<String> catsOverThreshWDuplicates = new HashSet<>();
 		String conversionMapKey;
 		String categoryName;
@@ -93,10 +94,9 @@ public class TensorflowServiceImpl implements TensorflowService {
 		return catsOverThresh;
 	}
 
-	private Map<String, Object> unpackTensorflowResults(List<Tensor<?>> resultTensors, String[] tensorLabels) throws IOException
+	private DetectionResponseDTO unpackTensorflowResults(List<Tensor<?>> resultTensors, String[] tensorLabels) throws IOException
 	// TODO update this to return list of Maps, one for each input
 	{
-
 		try {
 			assert resultTensors.size() == tensorLabels.length;
 		} catch ( AssertionError aE ) {
@@ -111,7 +111,6 @@ public class TensorflowServiceImpl implements TensorflowService {
 			String label = tensorLabels[i].replace(":0","");
 			tensor = resultTensors.get(i);
 			dims = tensor.numDimensions();
-			List<Float> floats;
 
 			switch(dims){ // TODO These assume that a single input tensor and one of each output tensors are used.
 				// TODO extrapolate to any number of input and output tensors
@@ -152,7 +151,25 @@ public class TensorflowServiceImpl implements TensorflowService {
 					throw new IOException("No unpacking handler for tensor with " + dims + " dimensions");
 			}
 		}
-		return map;
+		DetectionResponseDTO detectionResponseDTO = new DetectionResponseDTO(map);
+		addClassNames(detectionResponseDTO);
+		addThresholdClasses(detectionResponseDTO);
+
+		return detectionResponseDTO;
+	}
+
+	private void addClassNames(DetectionResponseDTO detectionResponse){
+		detectionResponse.setDetectionClassNames(
+				identifyCategoriesOverThreshold(detectionResponse, 0.0f));
+	}
+
+	private void addThresholdClasses(DetectionResponseDTO detectionResponse){
+
+		ClassesAtThresholdDTO classesAtThresholds = new ClassesAtThresholdDTO();
+		classesAtThresholds.setClassesAt50(identifyCategoriesOverThreshold(detectionResponse, 50.0f));
+		classesAtThresholds.setClassesAt60(identifyCategoriesOverThreshold(detectionResponse, 60.0f));
+		classesAtThresholds.setClassesAt75(identifyCategoriesOverThreshold(detectionResponse, 75.0f));
+		classesAtThresholds.setClassesAt90(identifyCategoriesOverThreshold(detectionResponse, 90.0f));
 	}
 
 	private static Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {

@@ -28,6 +28,10 @@ public class ClassesAtThresholdDTO
 	@ApiModelProperty(notes = "Named classes identified at 50% certainty threshold")
 	List<String> classesAt50;
 
+	private void setThresholdClasses(DetectionResponseDTO detectionResponseDTO){
+
+	}
+
 	public Map<String, List<String>> toMap(){
 		Map<String, List<String>> map = new HashMap<>();
 		map.put("90", classesAt90);

@@ -25,7 +25,7 @@ public class DetectionResponseDTO {
 	private List<Float> detectionScores;
 
 	@ApiModelProperty(notes = "Detection Classes Identified in each bounding box as a (int) float value, certainty of class prediction tracked in detectionScores")
-	private List<Integer> detectionClass;
+	private List<Integer> detectionClasses;
 
 	@ApiModelProperty(notes = "The named class of each detection")
 	private List<String> detectionClassNames;
@@ -38,14 +38,28 @@ public class DetectionResponseDTO {
 
 	@Builder
 	public DetectionResponseDTO(Map<String, Object> detectionResults) {
-		this.detectionResults = detectionResults;
+
+		List<List<Float>> detectionBoxes = (List<List<Float>>) detectionResults.get("detection_boxes");
+		this.detectionBoxes = detectionBoxes;
+
+		List<Float> detectionScores = (List<Float>) detectionResults.get("detection_scores");
+		this.detectionScores = detectionScores;
+
+		List<Integer> detectionClasses = (List<Integer>) detectionResults.get("detection_classes");
+		this.detectionClasses = detectionClasses;
+
+		List<String> detectionClassNames = (List<String>) detectionResults.get("detection_class_names");
+		this.detectionClassNames = detectionClassNames;
+
+		int numDetections = (int) detectionResults.get("num_detections");
+		this.numDetections = numDetections;
 	}
 
 	public Map<String, Object> toMap(){
 		Map<String, Object> map = new HashMap<>();
 		map.put("DetectionBoxes", detectionBoxes);
 		map.put("DetectionScores", detectionScores);
-		map.put("DetectionClass", detectionClass);
+		map.put("DetectionClass", detectionClasses);
 		map.put("DetectionClassNames", detectionClassNames);
 		map.put("NumberOfDetections", numDetections);
 		map.put("ClassesAtThresholds", classesAtThresholds.toMap());
