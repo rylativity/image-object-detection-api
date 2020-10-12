@@ -1,5 +1,6 @@
 package org.ryanstewart.objectdetection.model.dto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,20 +40,22 @@ public class DetectionResponseDTO {
 	@Builder
 	public DetectionResponseDTO(Map<String, Object> detectionResults) {
 
-		List<List<Float>> detectionBoxes = (List<List<Float>>) detectionResults.get("detection_boxes");
-		this.detectionBoxes = detectionBoxes;
+		this.detectionBoxes = (List<List<Float>>) detectionResults.get("detection_boxes");
 
-		List<Float> detectionScores = (List<Float>) detectionResults.get("detection_scores");
-		this.detectionScores = detectionScores;
+		this.detectionScores = (List<Float>) detectionResults.get("detection_scores");
 
-		List<Integer> detectionClasses = (List<Integer>) detectionResults.get("detection_classes");
-		this.detectionClasses = detectionClasses;
+		//DetectionResponseDTO requires List<Int> for this specific attribute
+		List<Float> detectionClassesFloats = (List<Float>) detectionResults.get("detection_classes");
+		List<Integer> detectionClassesInts = new ArrayList<>();
+		for(Float f: detectionClassesFloats){
+			detectionClassesInts.add((int) f.floatValue());
+		}
+		this.detectionClasses = detectionClassesInts;
 
-		List<String> detectionClassNames = (List<String>) detectionResults.get("detection_class_names");
-		this.detectionClassNames = detectionClassNames;
+		this.detectionClassNames = (List<String>) detectionResults.get("detection_class_names");
 
-		int numDetections = (int) detectionResults.get("num_detections");
-		this.numDetections = numDetections;
+		Float numDetectionsFloat = (Float) detectionResults.get("num_detections");
+		this.numDetections = (int) numDetectionsFloat.floatValue();
 	}
 
 	public Map<String, Object> toMap(){

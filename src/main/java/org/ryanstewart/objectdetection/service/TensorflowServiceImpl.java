@@ -153,23 +153,24 @@ public class TensorflowServiceImpl implements TensorflowService {
 		}
 		DetectionResponseDTO detectionResponseDTO = new DetectionResponseDTO(map);
 		addClassNames(detectionResponseDTO);
-		addThresholdClasses(detectionResponseDTO);
+		addThresholdClassifications(detectionResponseDTO);
 
 		return detectionResponseDTO;
 	}
 
 	private void addClassNames(DetectionResponseDTO detectionResponse){
 		detectionResponse.setDetectionClassNames(
-				identifyCategoriesOverThreshold(detectionResponse, 0.0f));
+				identifyCategoriesOverThreshold(detectionResponse, -1f));
 	}
 
-	private void addThresholdClasses(DetectionResponseDTO detectionResponse){
+	private void addThresholdClassifications(DetectionResponseDTO detectionResponse){
 
 		ClassesAtThresholdDTO classesAtThresholds = new ClassesAtThresholdDTO();
-		classesAtThresholds.setClassesAt50(identifyCategoriesOverThreshold(detectionResponse, 50.0f));
-		classesAtThresholds.setClassesAt60(identifyCategoriesOverThreshold(detectionResponse, 60.0f));
-		classesAtThresholds.setClassesAt75(identifyCategoriesOverThreshold(detectionResponse, 75.0f));
-		classesAtThresholds.setClassesAt90(identifyCategoriesOverThreshold(detectionResponse, 90.0f));
+		classesAtThresholds.setClassesAt50(identifyCategoriesOverThreshold(detectionResponse, 0.5f));
+		classesAtThresholds.setClassesAt60(identifyCategoriesOverThreshold(detectionResponse, 0.6f));
+		classesAtThresholds.setClassesAt75(identifyCategoriesOverThreshold(detectionResponse, 0.75f));
+		classesAtThresholds.setClassesAt90(identifyCategoriesOverThreshold(detectionResponse, 0.9f));
+		detectionResponse.setClassesAtThresholds(classesAtThresholds);
 	}
 
 	private static Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {
