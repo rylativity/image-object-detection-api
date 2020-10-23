@@ -42,19 +42,21 @@ public class DetectionResponseDTO {
 
 	//TODO Add Merge Method
 	public void merge(DetectionResponseDTO otherDetectionResponseDto) {
-		this.boundingBoxes.addAll(otherDetectionResponseDto.getBoundingBoxes());
-		this.scores.addAll(otherDetectionResponseDto.getScores());
-		this.classNums.addAll(otherDetectionResponseDto.getClassNums());
-		this.classes.addAll(otherDetectionResponseDto.getClasses());
-		this.numDetections += otherDetectionResponseDto.getNumDetections();
+		if(otherDetectionResponseDto.getNumDetections() != 0){
+			this.boundingBoxes.addAll(otherDetectionResponseDto.getBoundingBoxes());
+			this.scores.addAll(otherDetectionResponseDto.getScores());
+			this.classNums.addAll(otherDetectionResponseDto.getClassNums());
+			this.classes.addAll(otherDetectionResponseDto.getClasses());
+			this.numDetections += otherDetectionResponseDto.getNumDetections();
 
-		List<Float> confidences;
-		for (String s : otherDetectionResponseDto.getClassConfidences().keySet()) {
-			confidences = otherDetectionResponseDto.getClassConfidences().get(s);
-			if (this.classConfidences.keySet().contains(s)) {
-				this.classConfidences.get(s).addAll(confidences);
-			} else {
-				this.classConfidences.put(s, confidences);
+			List<Float> confidences;
+			for (String s : otherDetectionResponseDto.getClassConfidences().keySet()) {
+				confidences = otherDetectionResponseDto.getClassConfidences().get(s);
+				if (this.classConfidences.keySet().contains(s)) {
+					this.classConfidences.get(s).addAll(confidences);
+				} else {
+					this.classConfidences.put(s, confidences);
+				}
 			}
 		}
 	}
