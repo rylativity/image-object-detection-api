@@ -329,22 +329,24 @@ public class TensorflowModelBundle {
 
 	private void addClassNames(Map<String, Object> detectionResponse) {
 		List<?> _numericCategories = (List<?>) detectionResponse.get(classNumsMapKey);
-		String typeName = _numericCategories.get(0).getClass().getSimpleName();
-		List<Integer> numericCategories = new ArrayList<>();
-		if (typeName.equals("Integer")) {
-			numericCategories = (List<Integer>) _numericCategories;
-		} else if (typeName.equals("Float")) {
-			for (Object f : _numericCategories) {
-				numericCategories.add(((Float) f).intValue());
+		if(!_numericCategories.isEmpty()){
+			String typeName = _numericCategories.get(0).getClass().getSimpleName();
+			List<Integer> numericCategories = new ArrayList<>();
+			if (typeName.equals("Integer")) {
+				numericCategories = (List<Integer>) _numericCategories;
+			} else if (typeName.equals("Float")) {
+				for (Object f : _numericCategories) {
+					numericCategories.add(((Float) f).intValue());
+				}
 			}
+			List<String> classNamesList = new ArrayList<>();
+			String categoryName;
+			for (Integer i : numericCategories) {
+				categoryName = this.classNameDictionary.get(i);
+				classNamesList.add(categoryName);
+			}
+			detectionResponse.put("classes", classNamesList);
 		}
-		List<String> classNamesList = new ArrayList<>();
-		String categoryName;
-		for (Integer i : numericCategories) {
-			categoryName = this.classNameDictionary.get(i);
-			classNamesList.add(categoryName);
-		}
-		detectionResponse.put("classes", classNamesList);
 	}
 
 	private void addThresholdClassifications(Map<String, Object> detectionResponse) {
