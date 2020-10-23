@@ -1,0 +1,32 @@
+# LOGGING CONFIGURATION
+logging:
+  level:
+    ROOT: WARN
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.ryanstewart: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%-40logger{36}) - %msg%n"
+
+# SERVER CONFIGURATION
+server:
+  port: 8080
+
+# SPRING CONFIGURATION
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-exclude: static/**,.h2.server.properties
+  jackson:
+    serialization:
+      indent-output: true
+  jmx:
+    enabled: false
+
+# MANAGEMENT CONFIGURATION
+management:
+  endpoint:
+    health:
+      show-details: always
+      roles: 'HealthBot'

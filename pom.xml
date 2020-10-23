@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.ryanstewrt</groupId>
+	<artifactId>image-object-detection-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>image-object-detection-api</name>
+	<packaging>jar</packaging>
+	<description>A SpringBoot API, serving various object detection tensorflow models.</description>
+	<url>
+		<!-- TODO -->
+	</url>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.10.RELEASE</version><!-- If updating, update spring-boot.version as well! -->
+		<relativePath />
+	</parent>
+
+	<properties>
+		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<jdk.version>${java.version}</jdk.version>
+		<spring-boot.version>2.2.10.RELEASE</spring-boot.version>
+		<release-train-data-bom.version>1.0.0-SNAPSHOT</release-train-data-bom.version>
+		<jsoup.version>1.13.1</jsoup.version>
+		<sonar.binaries>target/classes</sonar.binaries>
+		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
+		<sonar.surefire.reportPaths>target/surefire-reports</sonar.surefire.reportPaths>
+		<springfox.version>3.0.0</springfox.version>
+		<mapstruct.version>1.3.1.Final</mapstruct.version>
+		<javafaker.version>1.0.2</javafaker.version>
+		<start-class>org.ryanstewart.objectdetection.Application</start-class>
+	</properties>
+
+	<developers>
+		<developer>
+			<id>1</id>
+			<name>Ryan Stewart</name>
+			<email>ryan.stewart113@gmail.com</email>
+			<organization>Greenzone Solutions</organization>
+			<organizationUrl>https://www.greenzoneinc.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>EST</timezone>
+		</developer>
+	</developers>
+
+	<inceptionYear>
+		2020
+	</inceptionYear>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.tensorflow</groupId>
+			<artifactId>tensorflow</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+
+		<!-- SECURITY -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
+		</dependency>
+
+		<!-- DISCOVERY -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure-processor</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- DATA -->
+
+
+		<!-- SWAGGER -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+
+		<!-- HELPERS -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.27</version>
+		</dependency>
+
+		<!-- TEST -->
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>${javafaker.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>local</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.6</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+				  <java>
+					<importOrder>
+						<file>${basedir}/formatter/format.importorder</file>
+					</importOrder>
+					<eclipse>
+						<version>4.13.0</version>
+						<file>${basedir}/formatter/format.xml</file>
+					</eclipse>
+				  </java>
+				</configuration>
+			  </plugin>
+		</plugins>
+	</build>
+
+</project>

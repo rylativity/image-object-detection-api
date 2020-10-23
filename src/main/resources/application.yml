@@ -1,0 +1,23 @@
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ['configprops', 'env', 'health', 'info', 'logfile', 'loggers', 'prometheus', 'threaddump']
+
+# SPRING CONFIGURATION
+spring:
+  application:
+    name: image-object-detection-api
+  profiles:
+    active: local
+  output:
+    ansi:
+      enabled: always
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+tensorflow:
+  config: object-detection-model-config.yml
