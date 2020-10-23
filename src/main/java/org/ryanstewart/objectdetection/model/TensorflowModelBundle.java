@@ -367,23 +367,25 @@ public class TensorflowModelBundle {
 
 		List<String> classNames = (List<String>) detectionResponse.get("classes");
 		List<Float> scores = (List<Float>) detectionResponse.get(scoresMapKey);
-		Map<String, List<?>> map = new HashMap<>();
-		Set<String> classSet = new HashSet<>(classNames);
+		if(!scores.isEmpty()){
+			Map<String, List<?>> map = new HashMap<>();
+			Set<String> classSet = new HashSet<>(classNames);
 
-		List<Float> classScores;
-		Float score;
-		for (String uniqueClassName : classSet) {
+			List<Float> classScores;
+			Float score;
+			for (String uniqueClassName : classSet) {
 
-			classScores = new ArrayList<>();
-			for (int i = 0; i < classNames.size(); i++) {
-				if (classNames.get(i).equals(uniqueClassName)) {
-					classScores.add(scores.get(i));
+				classScores = new ArrayList<>();
+				for (int i = 0; i < classNames.size(); i++) {
+					if (classNames.get(i).equals(uniqueClassName)) {
+						classScores.add(scores.get(i));
+					}
 				}
-			}
-			map.put(uniqueClassName, classScores);
+				map.put(uniqueClassName, classScores);
 
+			}
+			detectionResponse.put("classConfidences", map);
 		}
-		detectionResponse.put("classConfidences", map);
 	}
 
 	//TODO FINISH THIS METHOD
