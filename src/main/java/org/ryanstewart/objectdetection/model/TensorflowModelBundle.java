@@ -400,7 +400,7 @@ public class TensorflowModelBundle {
 		if (!indicesBelowThresholdScore.isEmpty()) {
 			List<List<Float>> boxesCurrent = (List<List<Float>>) map.get(boxesMapKey);
 			List<Float> classNumsCurrent = (List<Float>) map.get(classNumsMapKey);
-			float numDetections = (float) map.get(numDetectionsMapKey);
+			float numDetections = scoresCurrent.size();
 
 			List<Float> scoresSwap = new ArrayList<>();
 			List<List<Float>> boxesSwap = new ArrayList<>();
