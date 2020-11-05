@@ -1,13 +1,5 @@
 package org.ryanstewart.objectdetection.model;
 
-import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
-import lombok.NoArgsConstructor;
-import org.tensorflow.SavedModelBundle;
-import org.tensorflow.Session;
-import org.tensorflow.Tensor;
-import org.tensorflow.types.UInt8;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
@@ -20,7 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
+import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
+import org.tensorflow.SavedModelBundle;
+import org.tensorflow.Session;
+import org.tensorflow.Tensor;
+import org.tensorflow.types.UInt8;
+
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
 @NoArgsConstructor
+@Log4j2
 public class TensorflowModelBundle {
 
 	String boxesMapKey = "boundingBoxes";
@@ -329,7 +333,8 @@ public class TensorflowModelBundle {
 
 	private void addClassNames(Map<String, Object> detectionResponse) {
 		List<?> _numericCategories = (List<?>) detectionResponse.get(classNumsMapKey);
-		if(!_numericCategories.isEmpty()){
+		List<String> classNamesList = new ArrayList<>();
+		if (!_numericCategories.isEmpty()) {
 			String typeName = _numericCategories.get(0).getClass().getSimpleName();
 			List<Integer> numericCategories = new ArrayList<>();
 			if (typeName.equals("Integer")) {
@@ -339,14 +344,13 @@ public class TensorflowModelBundle {
 					numericCategories.add(((Float) f).intValue());
 				}
 			}
-			List<String> classNamesList = new ArrayList<>();
 			String categoryName;
 			for (Integer i : numericCategories) {
 				categoryName = this.classNameDictionary.get(i);
 				classNamesList.add(categoryName);
 			}
-			detectionResponse.put("classes", classNamesList);
 		}
+		detectionResponse.put("classes", classNamesList);
 	}
 
 	private void addThresholdClassifications(Map<String, Object> detectionResponse) {
@@ -367,8 +371,8 @@ public class TensorflowModelBundle {
 
 		List<String> classNames = (List<String>) detectionResponse.get("classes");
 		List<Float> scores = (List<Float>) detectionResponse.get(scoresMapKey);
-		if(!scores.isEmpty()){
-			Map<String, List<?>> map = new HashMap<>();
+		Map<String, List<?>> map = new HashMap<>();
+		if (!scores.isEmpty()) {
 			Set<String> classSet = new HashSet<>(classNames);
 
 			List<Float> classScores;
@@ -382,15 +386,15 @@ public class TensorflowModelBundle {
 					}
 				}
 				map.put(uniqueClassName, classScores);
-
 			}
-			detectionResponse.put("classConfidences", map);
 		}
+		detectionResponse.put("classConfidences", map);
 	}
 
 	//TODO FINISH THIS METHOD
 	private void pruneBelowThreshold(Map<String, Object> map) {
 		List<Float> scoresCurrent = (List<Float>) map.get(scoresMapKey);
+		LOG.info("Detection Scores: " + scoresCurrent.toString());
 		List<Integer> indicesBelowThresholdScore = new ArrayList<>();
 		for (int i = 0; i < scoresCurrent.size(); i++) {
 			if (scoresCurrent.get(i) < minConfidence) {
@@ -398,13 +402,17 @@ public class TensorflowModelBundle {
 			}
 		}
 		if (!indicesBelowThresholdScore.isEmpty()) {
+			LOG.info(indicesBelowThresholdScore.size() + " detections below threshold value.  Pruning...");
 			List<List<Float>> boxesCurrent = (List<List<Float>>) map.get(boxesMapKey);
 			List<Float> classNumsCurrent = (List<Float>) map.get(classNumsMapKey);
-			float numDetections = scoresCurrent.size();
+			float numDetectionsCurrent = scoresCurrent.size();
 
 			List<Float> scoresSwap = new ArrayList<>();
 			List<List<Float>> boxesSwap = new ArrayList<>();
 			List<Float> classNumsSwap = new ArrayList<>();
+			float numDetections = numDetectionsCurrent - indicesBelowThresholdScore.size();
+			LOG.info("Pruning response from " + numDetectionsCurrent + " to " + numDetections
+					+ " above threshold " + minConfidence);
 			for (int i = 0; i < indicesBelowThresholdScore.size(); i++) {
 				if (!indicesBelowThresholdScore.contains(i)) {
 					scoresSwap.add(scoresCurrent.get(i));
@@ -412,7 +420,6 @@ public class TensorflowModelBundle {
 					classNumsSwap.add(classNumsCurrent.get(i));
 				}
 			}
-			numDetections -= (float) indicesBelowThresholdScore.size();
 			map.put(scoresMapKey, scoresSwap);
 			map.put(boxesMapKey, boxesSwap);
 			map.put(classNumsMapKey, classNumsSwap);

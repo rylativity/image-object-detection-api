@@ -1,6 +1,7 @@
 package org.ryanstewart.objectdetection.util;
 
 import org.ryanstewart.objectdetection.exception.DTOIdNotAllowedException;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

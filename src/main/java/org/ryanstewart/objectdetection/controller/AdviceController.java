@@ -1,10 +1,18 @@
 package org.ryanstewart.objectdetection.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.imageio.IIOException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import org.ryanstewart.objectdetection.constants.Printer;
 import org.ryanstewart.objectdetection.exception.ApiError;
 import org.ryanstewart.objectdetection.exception.BaseEntityNotFoundException;
 import org.ryanstewart.objectdetection.exception.BaseException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,12 +32,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 @RestControllerAdvice
 @Log4j2
@@ -72,6 +75,15 @@ public class AdviceController extends ResponseEntityExceptionHandler {
 		handleLog(ex);
 		//
 		final String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+		final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+	}
+
+	@ExceptionHandler({ IIOException.class })
+	public ResponseEntity<Object> handleImageIIOException(final IIOException ex) {
+		handleLog(ex);
+
+		final String error = ex.getMessage();
 		final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
 		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}

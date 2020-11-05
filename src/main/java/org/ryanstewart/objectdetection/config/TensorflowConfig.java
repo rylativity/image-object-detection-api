@@ -1,5 +1,10 @@
 package org.ryanstewart.objectdetection.config;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
 import org.ryanstewart.objectdetection.service.TensorflowService;
 import org.ryanstewart.objectdetection.service.TensorflowServiceImpl;
@@ -8,12 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.log4j.Log4j2;
 
 @Configuration
+@Log4j2
 public class TensorflowConfig {
 
 	@Value("${tensorflow.config}")
@@ -33,13 +36,14 @@ public class TensorflowConfig {
 		for (String k : configMap.keySet()) {
 			if (!k.startsWith("model")) {
 				throw new Exception(
-						"Root keys of configuration yaml must match pattern 'model\\d+' (e.g. model0, model1, etc)");
+						"Root keys of " + tensorflowConfig
+								+ " must match pattern 'model\\d+' (e.g. model0, model1, etc)");
 			}
 			modelBundles.add(new TensorflowModelBundle((Map<String, Object>) configMap.get(k)));
-			System.out.println("Loaded Tensorflow Model " + k + " Defined In " + tensorflowConfig);
+			LOG.info("Successfully loaded Tensorflow Model " + k + " Defined In " + tensorflowConfig);
 		}
 		tfImpl.setModels(modelBundles);
-		System.out.println(modelBundles.size() + " MODEL(S) LOADED FROM CONFIG FILE");
+		LOG.info(modelBundles.size() + " MODEL(S) LOADED FROM CONFIG FILE");
 		return tfImpl;
 	}
 

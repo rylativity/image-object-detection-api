@@ -92,7 +92,7 @@ public enum ModelCategoryClassName {
 	}
 
 	//Takes integer category classification and returns the enum with appropriate value
-	public static ModelCategoryClassName valueOf(int value) {
+	public static ModelCategoryClassName valueOf(int value) throws Exception {
 		Optional<ModelCategoryClassName> opt = Arrays.stream(values())
 				.filter(legNo -> legNo.classNumber == value)
 				.findFirst();
@@ -100,7 +100,7 @@ public enum ModelCategoryClassName {
 		if (opt.isPresent()) {
 			modelCategoryClassName = opt.get();
 		} else {
-			System.out.println("ClassName could not be found with integer value " + Integer.toString(value));
+			throw new Exception("ClassName could not be found with integer value " + Integer.toString(value));
 		}
 		return modelCategoryClassName;
 	}
