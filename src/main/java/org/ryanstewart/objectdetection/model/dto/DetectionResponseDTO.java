@@ -1,19 +1,23 @@
 package org.ryanstewart.objectdetection.model.dto;
 
+import java.util.List;
+import java.util.Map;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.log4j.Log4j2;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
-
-import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
 @ApiModel(description = "Class representing object detection results")
+@Log4j2
 //TODO figure out how to unpack this response object without hardcoding tensor labels. Consider not making this a defined class for flexibility
 public class DetectionResponseDTO {
 
@@ -42,7 +46,8 @@ public class DetectionResponseDTO {
 
 	//TODO Add Merge Method
 	public void merge(DetectionResponseDTO otherDetectionResponseDto) {
-		if(otherDetectionResponseDto.getNumDetections() != 0){
+		if (otherDetectionResponseDto.getNumDetections() != 0) {
+			LOG.info("Merging " + otherDetectionResponseDto.getNumDetections() + " detections into response");
 			this.boundingBoxes.addAll(otherDetectionResponseDto.getBoundingBoxes());
 			this.scores.addAll(otherDetectionResponseDto.getScores());
 			this.classNums.addAll(otherDetectionResponseDto.getClassNums());

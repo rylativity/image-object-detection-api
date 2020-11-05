@@ -8,14 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 /**
  * Configuration that registers static content resources and redirects available in the microservice.
  * <p>
+ * In general additions of bundled static content resources will not be necessary for REST microservices.
+ * <p>
  * The configuration of static content resources is exercised for the web pages of microservices - which
  * only consists of Swagger documentation pages. This file is based off of the recommendations of the
- * Springfox team for migrating from 2.x to 3.x.
- *
- * @version 1.0.0
- * @see WebMvcSupportConfig
- * @see <a href="https://springfox.github.io/springfox/docs/current/#migrating-from-existing-2-x-version">Springfox 2.x Migration Recommendation</a>
- * @since 1.0.0
+ * Springfox team for migrating from 2.x to 3.x
  */
 @Configuration
 public class WebMvcSupportConfig extends WebMvcConfigurationSupport {

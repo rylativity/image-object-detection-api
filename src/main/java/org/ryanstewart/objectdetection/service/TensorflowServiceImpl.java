@@ -1,13 +1,14 @@
 package org.ryanstewart.objectdetection.service;
 
-import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
-import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
+import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
+import org.springframework.stereotype.Service;
+
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
