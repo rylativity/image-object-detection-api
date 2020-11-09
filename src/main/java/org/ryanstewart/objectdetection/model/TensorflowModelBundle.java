@@ -427,7 +427,7 @@ public class TensorflowModelBundle {
 		}
 	}
 
-	private static Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {
+	private Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {
 		ByteArrayInputStream is = new ByteArrayInputStream(imageBytes);
 		BufferedImage img = ImageIO.read(is);
 
