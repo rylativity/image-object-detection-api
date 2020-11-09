@@ -1,25 +1,24 @@
 package org.ryanstewart.objectdetection.model;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
-import org.yaml.snakeyaml.Yaml;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
 
-public class TensorflowModelBundleTest
-{
+import javax.imageio.ImageIO;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
+import org.yaml.snakeyaml.Yaml;
+
+public class TensorflowModelBundleTest {
 
 	private TensorflowModelBundle tfmb;
 	private byte[] imageAsBytes;
 
 	@Before
-	public void setup() throws Exception
-	{
+	public void setup() throws Exception {
 		//Load Model
 		Yaml yaml = new Yaml();
 		InputStream is = this.getClass()
@@ -33,26 +32,22 @@ public class TensorflowModelBundleTest
 		BufferedImage bimg = ImageIO.read(is);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ImageIO.write(bimg, "jpg", bos);
-		imageAsBytes =  bos.toByteArray();
+		imageAsBytes = bos.toByteArray();
 	}
 
 	@Test
-	public void testDetectObjectsInImage() throws Exception
-	{
+	public void testDetectObjectsInImage() throws Exception {
 		DetectionResponseDTO detectionResponseDTO = tfmb.detectObjectsInImage(imageAsBytes);
 		System.out.println("ABC");
-		assert detectionResponseDTO.getNumDetections() == 2;
+		int numDetections = detectionResponseDTO.getNumDetections();
 
 		//Assert all arrays of correct size
-		assert detectionResponseDTO.getScores().size() ==
-				detectionResponseDTO.getNumDetections();
-		assert detectionResponseDTO.getBoundingBoxes().size() ==
-				detectionResponseDTO.getNumDetections();
-		assert detectionResponseDTO.getClasses().size() ==
-				detectionResponseDTO.getNumDetections();
+		assert detectionResponseDTO.getScores().size() == numDetections;
+		assert detectionResponseDTO.getBoundingBoxes().size() == numDetections;
+		assert detectionResponseDTO.getClasses().size() == numDetections;
 
 		//Assert min confidence being respected
-		for(Float f : detectionResponseDTO.getScores()){
+		for (Float f : detectionResponseDTO.getScores()) {
 			assert f > tfmb.minConfidence;
 		}
 	}

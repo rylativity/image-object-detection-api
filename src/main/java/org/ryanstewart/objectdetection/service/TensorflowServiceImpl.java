@@ -18,10 +18,10 @@ public class TensorflowServiceImpl implements TensorflowService {
 	private List<TensorflowModelBundle> models;
 
 	// TODO
-	@Override
-	public void preprocessImageForInference(final byte[] imgAsBytes) {
-
-	}
+//	@Override
+//	public void preprocessImageForInference(final byte[] imgAsBytes) {
+//
+//	}
 
 	@Override
 	public DetectionResponseDTO detectObjectsInImage(final byte[] imgAsBytes) throws Exception {
