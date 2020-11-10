@@ -44,6 +44,9 @@ public class ObjectDetectionControllerTest {
 	}
 
 	@Test
-	public void hello() {
+	public void hello() throws Exception
+	{
+		this.mvc.perform(MockMvcRequestBuilders.get("/api/helloworld"))
+				.andExpect(status().isOk());
 	}
 }
