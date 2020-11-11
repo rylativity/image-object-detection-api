@@ -12,8 +12,6 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Data
 @Builder

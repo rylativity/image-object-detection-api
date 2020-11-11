@@ -44,7 +44,18 @@ public class ObjectDetectionControllerTest {
 	}
 
 	@Test
-	public void hello() throws Exception
+	public void shouldThrowClientErrorWhenCalledWithNonImageFile() throws Exception {
+		InputStream is = null;
+
+		MockMultipartFile notImageFile = new MockMultipartFile("image", "banner.txt", "multipart/form-data", is);
+
+		this.mvc.perform(MockMvcRequestBuilders.multipart("/api/detect").file(notImageFile)
+				.contentType("multipart/form-data"))
+				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	public void shouldAlwaysRespondHello() throws Exception
 	{
 		this.mvc.perform(MockMvcRequestBuilders.get("/api/helloworld"))
 				.andExpect(status().isOk());

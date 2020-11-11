@@ -18,6 +18,10 @@ import io.swagger.annotations.ApiResponses;
 
 import lombok.extern.log4j.Log4j2;
 
+import javax.imageio.IIOException;
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(value = "Perform object detection on binary image data", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,14 +36,16 @@ public class ObjectDetectionController {
 	@PostMapping(value = "/detect", consumes = { "multipart/form-data" })
 	@ApiOperation(value = "Get results of object detection model on input image", response = DetectionResponseDTO.class)
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success", response = DetectionResponseDTO.class) })
-	public DetectionResponseDTO detectAll(@RequestParam(name = "image") MultipartFile uploadedImage)
-			throws Exception {
+	public DetectionResponseDTO detectAll(@RequestParam(name = "image") MultipartFile uploadedImage) throws Exception {
+
+		List<String> acceptableMimeTypes = Arrays.asList("application/jpeg", "application/jpg", "application/png");
 		if (uploadedImage == null) {
 			LOG.info("No Image Content Found In Request");
 			throw new RestClientException(
-					"Must set Header 'Content-Type: multipart/form-data' and provide an image in 'image' field of request") {
-			};
-		} else {
+					"Must set Header 'Content-Type: multipart/form-data' and provide an image in 'image' field of request");
+		} else if (!acceptableMimeTypes.contains(uploadedImage.getContentType())) { // Only accept certain file types
+			throw new IIOException("Multipart file in POST request must contain an image file with one of the following mime-types: " + acceptableMimeTypes.toString());
+		} else { // If the request contains a valid image
 			LOG.info("Image request uploaded successfully.  Processing image with filename: "
 					+ uploadedImage.getOriginalFilename());
 		}
