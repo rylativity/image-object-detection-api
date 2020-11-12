@@ -1,11 +1,11 @@
-package org.ryanstewart.objectdetection.model.dto;
+package org.ryanstewart.model.dto;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-
-import org.junit.Test;
 
 public class DetectionResponseDTOTest {
 

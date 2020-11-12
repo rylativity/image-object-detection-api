@@ -1,16 +1,15 @@
-package org.ryanstewart.objectdetection.model;
+package org.ryanstewart.model;
 
+import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
+import org.junit.Before;
+import org.junit.Test;
+import org.yaml.snakeyaml.Yaml;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
-import org.yaml.snakeyaml.Yaml;
 
 public class TensorflowModelBundleTest {
 
@@ -38,7 +37,6 @@ public class TensorflowModelBundleTest {
 	@Test
 	public void testDetectObjectsInImage() throws Exception {
 		DetectionResponseDTO detectionResponseDTO = tfmb.detectObjectsInImage(imageAsBytes);
-		System.out.println("ABC");
 		int numDetections = detectionResponseDTO.getNumDetections();
 
 		//Assert all arrays of correct size
