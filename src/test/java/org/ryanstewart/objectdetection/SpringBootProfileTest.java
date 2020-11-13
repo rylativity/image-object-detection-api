@@ -1,4 +1,4 @@
-package org.ryanstewart;
+package org.ryanstewart.objectdetection;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,13 +1,9 @@
-package org.ryanstewart.service;
+package org.ryanstewart.objectdetection.service;
 
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ryanstewart.objectdetection.service.ObjectDetectionService;
-import org.ryanstewart.objectdetection.service.ObjectDetectionServiceImpl;
-import org.ryanstewart.objectdetection.service.TensorflowService;
-import org.ryanstewart.objectdetection.service.TensorflowServiceImpl;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.client.RestClientException;

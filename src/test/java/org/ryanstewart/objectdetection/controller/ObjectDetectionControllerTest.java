@@ -1,6 +1,5 @@
-package org.ryanstewart.controller;
+package org.ryanstewart.objectdetection.controller;
 
-import org.ryanstewart.objectdetection.controller.ObjectDetectionController;
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.ryanstewart.objectdetection.service.ObjectDetectionService;
 import org.junit.Test;

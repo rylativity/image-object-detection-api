@@ -3,8 +3,8 @@ package org.ryanstewart.objectdetection.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
+import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
 import org.springframework.stereotype.Service;
 
 import lombok.Setter;

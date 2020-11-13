@@ -1,4 +1,4 @@
-package org.ryanstewart.model;
+package org.ryanstewart.objectdetection.model;
 
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class TensorflowModelBundleTest {
 
 	private TensorflowModelBundle tfmb;
-	private byte[] imageAsBytes;
+	private byte[]                imageAsBytes;
 
 	@Before
 	public void setup() throws Exception {
@@ -37,7 +37,7 @@ public class TensorflowModelBundleTest {
 	@Test
 	public void testDetectObjectsInImage() throws Exception {
 		DetectionResponseDTO detectionResponseDTO = tfmb.detectObjectsInImage(imageAsBytes);
-		int numDetections = detectionResponseDTO.getNumDetections();
+		int                  numDetections        = detectionResponseDTO.getNumDetections();
 
 		//Assert all arrays of correct size
 		assert detectionResponseDTO.getScores().size() == numDetections;

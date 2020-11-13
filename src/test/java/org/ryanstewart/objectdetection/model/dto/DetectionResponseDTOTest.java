@@ -1,4 +1,4 @@
-package org.ryanstewart.model.dto;
+package org.ryanstewart.objectdetection.model.dto;
 
 import org.junit.Test;
 

@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import org.ryanstewart.objectdetection.model.dto.DetectionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.log4j.Log4j2;
@@ -35,11 +36,15 @@ public class ObjectDetectionServiceImpl implements ObjectDetectionService {
 	private DetectionResponseDTO runObjectDetection(MultipartFile img) throws Exception {
 
 		if (img == null) {
-			LOG.error("MultipartFile IMAGE IS NULL IN OBJECTDETECTIONSERVICEIMPL!!!");
+			String errorMessage = "No MultipartFile provided in POST request";
+			LOG.error(errorMessage);
+			throw new RestClientException(errorMessage);
 		}
 		byte[] imgAsBytes = imageToByteArray(img);
 		if (imgAsBytes == null) {
-			LOG.error("IMAGE BYTES IS NULL!!!");
+			String errorMessage = "No image contained in 'image' field of MultipartFile in POST request";
+			LOG.error(errorMessage);
+			throw new RestClientException(errorMessage);
 		}
 		return detectObjectsFromImgByteArray(imgAsBytes);
 	}
@@ -55,7 +60,9 @@ public class ObjectDetectionServiceImpl implements ObjectDetectionService {
 		try {
 			jpegImage = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 		} catch (NullPointerException ex) {
-			throw new IIOException("Not a valid image file");
+			String errorMessage = "Empty or non-image file contained in 'image' field of MultipartFile in POST request";
+			LOG.error(errorMessage);
+			throw new RestClientException(errorMessage);
 		}
 
 		jpegImage.createGraphics().drawImage(bImage, 0, 0, Color.BLACK, null);

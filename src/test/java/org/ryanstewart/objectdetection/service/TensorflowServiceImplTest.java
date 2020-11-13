@@ -1,4 +1,4 @@
-package org.ryanstewart.service;
+package org.ryanstewart.objectdetection.service;
 
 import org.ryanstewart.objectdetection.model.TensorflowModelBundle;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class TensorflowServiceImplTest {
 					.getClassLoader()
 					.getResourceAsStream(tensorflowConfig);
 			//Expected to contain one root-level key per model
-			Map<String, Object> configMap = yaml.load(is);
+			Map<String, Object>         configMap    = yaml.load(is);
 			List<TensorflowModelBundle> modelBundles = new ArrayList<>();
 			for (String k : configMap.keySet()) {
 				if (!k.startsWith("model")) {
