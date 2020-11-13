@@ -1,0 +1,107 @@
+#General Coco Object Detection Model
+model1:
+  modelPath: src/main/resources/tf_models/ssd_mobilenet_v1_coco_2017_11_17
+  inputTensor:
+    label: image_tensor:0
+    type: integer
+    ndim: 2
+  outputTensors:
+    boundingBoxes:
+      label: detection_boxes:0
+      type: float
+      ndim: 3
+    classNums:
+      label: detection_classes:0
+      type: float
+      ndim: 2
+    scores:
+      label: detection_scores:0
+      type: float
+      ndim: 2
+    numDetections:
+      label: num_detections:0
+      type: float
+      ndim: 1
+  #  confidenceThresholds: 0.3,0.5,0.75,0.9
+  minConfidence: 0.3
+  classNameDictionary:
+    1: PERSON
+    2: BICYCLE
+    3: CAR
+    4: MOTORCYCLE
+    5: AIRPLANE
+    6: BUS
+    7: TRAIN
+    8: TRUCK
+    9: BOAT
+    10: TRAFFIC LIGHT
+    11: FIRE HYDRANT
+    13: STOP SIGN
+    14: PARKING METER
+    15: BENCH
+    16: BIRD
+    17: CAT
+    18: DOG
+    19: HORSE
+    20: SHEEP
+    21: COW
+    22: ELEPHANT
+    23: BEAR
+    24: ZEBRA
+    25: GIRAFFE
+    27: BACKPACK
+    28: UMBRELLA
+    31: HANDBAG
+    32: TIE
+    33: SUITCASE
+    34: FRISBEE
+    35: SKIS
+    36: SNOWBOARD
+    37: SPORTS BALL
+    38: KITE
+    39: BASEBALL BAT
+    40: BASEBALL GLOVE
+    41: SKATEBOARD
+    42: SURFBOARD
+    43: TENNIS RACKET
+    44: BOTTLE
+    46: WINE GLASS
+    47: CUP
+    48: FORK
+    49: KNIFE
+    50: SPOON
+    51: BOWL
+    52: BANANA
+    53: APPLE
+    54: SANDWICH
+    55: ORANGE
+    56: BROCCOLI
+    57: CARROT
+    58: HOT DOG
+    59: PIZZA
+    60: DONUT
+    61: CAKE
+    62: CHAIR
+    63: COUCH
+    64: POTTED PLANT
+    65: BED
+    67: DINING TABLE
+    70: TOILET
+    72: TV
+    73: LAPTOP
+    74: MOUSE
+    75: REMOTE
+    76: KEYBOARD
+    77: CELLPHONE
+    78: MICROWAVE
+    79: OVEN
+    80: TOASTER
+    81: SINK
+    82: REFRIGERATOR
+    84: BOOK
+    85: CLOCK
+    86: VASE
+    87: SCISSORS
+    88: TEDDY BEAR
+    89: HAIR DRIER
+    90: TOOTHBRUSH

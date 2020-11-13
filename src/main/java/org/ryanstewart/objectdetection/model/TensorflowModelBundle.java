@@ -34,7 +34,7 @@ public class TensorflowModelBundle {
 
 	String[] expectedConfigKeys = new String[] { boxesMapKey, classNumsMapKey, scoresMapKey, numDetectionsMapKey };
 
-	float[] defaultThresholds;
+//	float[] defaultThresholds;
 
 	double minConfidence;
 
@@ -110,9 +110,9 @@ public class TensorflowModelBundle {
 	}
 
 	// TODO
-	public void preprocessImageForInference(final byte[] imgAsBytes) {
-
-	}
+//	public void preprocessImageForInference(final byte[] imgAsBytes) {
+//
+//	}
 
 	public DetectionResponseDTO detectObjectsInImage(final byte[] imgAsBytes) throws Exception {
 		Tensor<UInt8> inputTensorImage = makeImageTensor(imgAsBytes);
@@ -143,34 +143,34 @@ public class TensorflowModelBundle {
 	}
 
 	//TODO update thresholdvaluecalculator to take values from controller params
-	private Map<String, List<List<Float>>> identifyCategoriesOverThreshold(Map<String, Object> results,
-			float threshold) {
-		List<Float> scores = (List<Float>) results.get(scoresMapKey);
-		List<String> categories = (List<String>) results.get("classes");
-		Map<String, List<List<Float>>> catsOverThresh = new HashMap<>();
-		String categoryName;
-		Float score;
-		for (int i = 0; i < scores.size(); i++) {
-			score = scores.get(i);
-			if (score >= threshold) {
-				//Get label name to use as map key
-				categoryName = categories.get(i);
-
-				//Retrieve List<List<Float>> holding bounding boxes and store in map with label as map key
-				List<List<Float>> swap;
-				if (catsOverThresh.containsKey(categoryName)) {
-					swap = catsOverThresh.get(categoryName);
-					swap.add(((List<List<Float>>) results.get(boxesMapKey)).get(i));
-					catsOverThresh.put(categoryName, swap);
-				} else {
-					swap = new ArrayList<>();
-					swap.add(((List<List<Float>>) results.get(boxesMapKey)).get(i));
-					catsOverThresh.put(categoryName, swap);
-				}
-			}
-		}
-		return catsOverThresh;
-	}
+//	private Map<String, List<List<Float>>> identifyCategoriesOverThreshold(Map<String, Object> results,
+//			float threshold) {
+//		List<Float> scores = (List<Float>) results.get(scoresMapKey);
+//		List<String> categories = (List<String>) results.get("classes");
+//		Map<String, List<List<Float>>> catsOverThresh = new HashMap<>();
+//		String categoryName;
+//		Float score;
+//		for (int i = 0; i < scores.size(); i++) {
+//			score = scores.get(i);
+//			if (score >= threshold) {
+//				//Get label name to use as map key
+//				categoryName = categories.get(i);
+//
+//				//Retrieve List<List<Float>> holding bounding boxes and store in map with label as map key
+//				List<List<Float>> swap;
+//				if (catsOverThresh.containsKey(categoryName)) {
+//					swap = catsOverThresh.get(categoryName);
+//					swap.add(((List<List<Float>>) results.get(boxesMapKey)).get(i));
+//					catsOverThresh.put(categoryName, swap);
+//				} else {
+//					swap = new ArrayList<>();
+//					swap.add(((List<List<Float>>) results.get(boxesMapKey)).get(i));
+//					catsOverThresh.put(categoryName, swap);
+//				}
+//			}
+//		}
+//		return catsOverThresh;
+//	}
 
 	private Map<String, Object> unpackTensorflowResults(List<Tensor<?>> resultTensors) throws Exception {
 		int numResultTensors = resultTensors.size();
@@ -265,13 +265,13 @@ public class TensorflowModelBundle {
 	}
 
 	// When tensor.numDimensions() == 1; e.g. [4] with shape [1,]
-	private float unpackScalarFloatTensor(Tensor tensor) {
+	float unpackScalarFloatTensor(Tensor tensor) {
 		float[] oneDimFloatArray = new float[(int) tensor.numElements()];
 		tensor.copyTo(oneDimFloatArray);
 		return oneDimFloatArray[0];
 	}
 
-	private int unpackScalarIntegerTensor(Tensor tensor) {
+	int unpackScalarIntegerTensor(Tensor tensor) {
 		int[] oneDimFloatArray = new int[(int) tensor.numElements()];
 		tensor.copyTo(oneDimFloatArray);
 		return oneDimFloatArray[0];
@@ -353,19 +353,19 @@ public class TensorflowModelBundle {
 		detectionResponse.put("classes", classNamesList);
 	}
 
-	private void addThresholdClassifications(Map<String, Object> detectionResponse) {
-
-		Map<String, Object> map = new HashMap<>();
-		String key;
-		Map<String, List<List<Float>>> boxes;
-		for (float f : defaultThresholds) {
-			//Create key based on float value (e.g. 0.75 -> "75")
-			key = Float.toString(f * 100f).replaceAll("\\.\\d+", "");
-			boxes = identifyCategoriesOverThreshold(detectionResponse, f);
-			map.put(key, boxes);
-		}
-		detectionResponse.put("thresholdDetections", map);
-	}
+//	private void addThresholdClassifications(Map<String, Object> detectionResponse) {
+//
+//		Map<String, Object> map = new HashMap<>();
+//		String key;
+//		Map<String, List<List<Float>>> boxes;
+//		for (float f : defaultThresholds) {
+//			//Create key based on float value (e.g. 0.75 -> "75")
+//			key = Float.toString(f * 100f).replaceAll("\\.\\d+", "");
+//			boxes = identifyCategoriesOverThreshold(detectionResponse, f);
+//			map.put(key, boxes);
+//		}
+//		detectionResponse.put("thresholdDetections", map);
+//	}
 
 	private void addClassConfidences(Map<String, Object> detectionResponse) {
 
@@ -427,7 +427,7 @@ public class TensorflowModelBundle {
 		}
 	}
 
-	private static Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {
+	private Tensor<UInt8> makeImageTensor(byte[] imageBytes) throws IOException {
 		ByteArrayInputStream is = new ByteArrayInputStream(imageBytes);
 		BufferedImage img = ImageIO.read(is);
 
